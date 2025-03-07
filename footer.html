@@ -1,0 +1,173 @@
+<!-- JAVASCRIPT -->
+<script src="../assets/libs/jquery/jquery.min.js"></script>
+<script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/libs/simplebar/simplebar.min.js"></script>
+<script src="../assets/libs/node-waves/waves.min.js"></script>
+
+<!-- Magnific Popup-->
+<script src="../assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- owl.carousel js -->
+<script src="../assets/libs/owl.carousel/owl.carousel.min.js"></script>
+
+<!-- page init -->
+<script src="../assets/js/pages/index.init.js"></script>
+
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/paste.js"></script>
+
+<script src="js/redeem.js"></script>
+<script src="js/paste.js"></script>
+
+
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+	    var table = $('#pending_redeem').DataTable({
+	        "order": [[0, 'desc']],
+	        "footerCallback": function(row, data, start, end, display) {
+	            var api = this.api(), data;
+
+	            // Calculate total redeem amount of all records
+	            var totalRedeemAmountAll = api.column(10).data().reduce(function(a, b) {
+	                return parseFloat(a) + parseFloat(b);
+	            }, 0);
+
+	            // Calculate total redeem amount of filtered records
+	            var totalRedeemAmountFiltered = api.column(10, {page: 'current'}).data().reduce(function(a, b) {
+	                return parseFloat(a) + parseFloat(b);
+	            }, 0);
+
+	            // Update the footer
+	            $(api.column(0).footer()).html('Total Redeem Amount (All): ' + totalRedeemAmountAll.toFixed(2));
+	            $(api.column(10).footer()).html('Total Redeem Amount (Filtered): ' + totalRedeemAmountFiltered.toFixed(2));
+	        }
+	    });
+	    
+	    // Handle search event
+	    $('#search_keyword').on('click', function() {
+	        table.draw();
+	    });
+	});
+
+</script>
+<!-- <script>
+    $(document).ready(function () {
+        var tableinstant=$('#paid_redeem').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "fetch_paid_redeem.php",  // Corrected URL
+                "method": "POST",
+                "dataType":"json"
+            },
+            "columns": [
+                { "data": "date","searchable": true },
+                { "data": "record_by","searchable": true },
+                { "data": "cust_name","searchable": true },
+                { "data": "contact","searchable": true },
+                { "data": "redeem_by","searchable": true },
+                { "data": "page_name","searchable": true },
+                { "data": "gid","searchable": true },
+                { "data": "ctid","searchable": true },
+                { "data": "comment","searchable": true },
+                { "data": "paidbyclient","searchable": true },
+                { "data": "clientname","searchable": true },
+                { "data": "amount","searchable": true },
+                { "data": "tip","searchable": true },
+                { "data": "addback","searchable": true },
+                { "data": "redeem_amount","searchable": true },
+                { "data": "status" },
+                // You might want to handle these columns differently, e.g., as render functions
+                { 
+                    "data": "view_images",
+                    "render": function(data, type, row) {
+                    	  
+                        return '<a href="#" class="view_image" data-id="' + row.id + '">View Images</a>';
+                    }
+                },
+                { 
+                    "data": "view_details",
+                    "render": function(data, type, row) {
+                    	 
+                        return '<i class="ri-eye-line view_rdm_details" data-id="' + row.id + '" style="cursor:pointer;"></i>';
+                    }
+                }
+            ],
+            "order": [[0, 'desc']], // Initial sorting
+
+            
+        });
+      
+    });
+</script> -->
+ <script>
+        $(document).ready(function ()
+        {
+            $('#paid_redeem thead th').each(function () {
+                var title = $(this).text();
+                $(this).html(title+' <input type="text" class="col-search-input" placeholder="Search ' + title + '" />');
+            });
+            
+            var table = $('#paid_redeem').DataTable({
+                	"scrollX": true,
+            		"pagingType": "numbers",
+                "processing": true,
+                "serverSide": true,
+                "ajax": "fetch_paid_redeem.php",
+                order: [[0, 'desc']],
+                columnDefs: [
+                	{
+			            "targets": 16,  
+			            "render": function(data, type, row) {
+			              
+			                var amount = parseFloat(row[13] || 0);  
+			                var tip = parseFloat(row[14] || 0);     
+			                var addback = parseFloat(row[15] || 0); 
+			                var redeemAmount = amount - tip - addback;
+
+			               
+			                return '<span>' + redeemAmount.toFixed(2) + '</span>';  
+			            }
+			        },
+                	{
+               
+		                "targets": 18, 
+		                "render": function(data, type, row) {
+		                    return '<a href="#" class="view_image" data-id="' + row[0] + '" data-pgid="' + row[8] + '">View Images</a>';
+		                }
+		            },
+		            {
+		               
+		                "targets": 19,
+		                "render": function(data, type, row) {
+		                    return '<i class="ri-eye-line view_rdm_details" data-id="' + row[0] + '" data-pgid="' + row[8] + '" style="cursor:pointer;"></i>';
+		                }
+		            },
+                	{
+	                    targets: "_all",
+	                    orderable: true
+                 	}
+                ]
+            });
+           
+
+            table.columns().every(function () {
+                var table = this;
+                $('input', this.header()).on('keyup change', function () {
+                    if (table.search() !== this.value) {
+                    	   table.search(this.value).draw();
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
+
