@@ -1,32 +1,31 @@
-# Ignore environment configuration files
-.htaccess
+# Ignore sensitive configuration files
+.env
 .env.local
+.htaccess
+db_connect.php  # Exclude database connection file
 
-# Ignore Composer dependencies
-/vendor/
+# Ignore dependency directories
+/vendor/        # Composer dependencies
+/node_modules/  # Node.js dependencies
 
-# Ignore cache and logs
+# Ignore cache and log files
 /storage/
 bootstrap/cache/
-
-# Ignore database files
-*.sql
-*.sqlite
-db_connect.php
-
-# Ignore compiled assets
-/node_modules/
+*.log
+*.bak
 npm-debug.log
 yarn-debug.log
 yarn-error.log
 
+# Ignore database files
+*.sql
+*.sqlite
+
 # Ignore IDE/editor-specific files
-*.log
-*.bak
 *.swp
 *.swo
-*.vscode/
-*.idea/
+.vscode/
+.idea/
 
 # Ignore system files
 .DS_Store
